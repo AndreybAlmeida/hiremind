@@ -79,7 +79,8 @@ Inicie com uma única frase de apresentação e imediatamente faça a pergunta d
 export function buildGeneratePrompt(
   roleSetup: RoleSetup,
   messages: Message[],
-  diagnosticSummary: string
+  diagnosticSummary: string,
+  companyContext?: string
 ): string {
   const conversationText = messages
     .map(
@@ -88,13 +89,17 @@ export function buildGeneratePrompt(
     )
     .join("\n\n");
 
+  const companyContextSection = companyContext
+    ? `\n## Conteúdo Real do Site da Empresa (use para enriquecer a descrição da empresa):\n${companyContext}\n`
+    : "";
+
   return `Você é um recrutador executivo sênior e redator especializado em descrições de vagas de alto impacto para empresas no Brasil e América Latina.
 
 Com base na conversa de diagnóstico abaixo, gere uma job description completa e profissional em formato JSON.
 
 ## Dados do Cargo:
 ${JSON.stringify(roleSetup, null, 2)}
-
+${companyContextSection}
 ## Conversa de Diagnóstico:
 ${conversationText}
 
@@ -106,6 +111,7 @@ ${diagnosticSummary}
 - Use contexto do mercado brasileiro para salários e referências culturais
 - Seja específico e orientado ao cargo — evite linguagem genérica
 - O perfil ideal do candidato deve ser vívido e específico
+- Se houver conteúdo real do site da empresa, use-o para tornar a descrição da empresa autêntica, específica e atraente — mencione produtos, missão, cultura real. A JD deve fazer o candidato querer trabalhar lá
 
 Responda APENAS com um objeto JSON válido — sem markdown, sem explicações:
 

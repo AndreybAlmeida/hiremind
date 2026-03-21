@@ -7,6 +7,7 @@ export interface RoleSetup {
   location: string;
   workModel: string;
   employmentType: string;
+  companyWebsite?: string;
 }
 
 export interface Message {

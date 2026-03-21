@@ -44,6 +44,7 @@ export default function SetupPage() {
     location: "",
     workModel: "",
     employmentType: "",
+    companyWebsite: "",
   });
 
   const handleChange = (
@@ -52,7 +53,9 @@ export default function SetupPage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const isValid = Object.values(form).every((v) => v.trim() !== "");
+  const isValid = Object.entries(form)
+    .filter(([key]) => key !== "companyWebsite")
+    .every(([, v]) => v.trim() !== "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,6 +119,24 @@ export default function SetupPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Site da Empresa
+                  <span className="ml-1.5 text-xs font-normal text-slate-400">(opcional — enriquece a JD)</span>
+                </label>
+                <input
+                  type="url"
+                  name="companyWebsite"
+                  value={form.companyWebsite}
+                  onChange={handleChange}
+                  placeholder="https://suaempresa.com.br"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Linha 1b */}
+            <div className="grid sm:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
                   Setor
                 </label>
                 <select
@@ -131,10 +152,6 @@ export default function SetupPage() {
                   ))}
                 </select>
               </div>
-            </div>
-
-            {/* Linha 2 */}
-            <div className="grid sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
                   Tamanho da Empresa
@@ -152,6 +169,10 @@ export default function SetupPage() {
                   ))}
                 </select>
               </div>
+            </div>
+
+            {/* Linha 2 */}
+            <div className="grid sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
                   Título do Cargo

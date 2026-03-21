@@ -27,7 +27,30 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const prompt = buildGeneratePrompt(roleSetup, messages, diagnosticSummary);
+    // Fetch company website content if provided
+    let companyContext = "";
+    if (roleSetup.companyWebsite) {
+      try {
+        const siteRes = await fetch(roleSetup.companyWebsite, {
+          headers: { "User-Agent": "Mozilla/5.0 (compatible; HireMind/1.0)" },
+          signal: AbortSignal.timeout(5000),
+        });
+        const html = await siteRes.text();
+        // Strip HTML tags and collapse whitespace
+        const text = html
+          .replace(/<script[\s\S]*?<\/script>/gi, "")
+          .replace(/<style[\s\S]*?<\/style>/gi, "")
+          .replace(/<[^>]+>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim()
+          .slice(0, 3000);
+        companyContext = text;
+      } catch {
+        // Silently continue without website context
+      }
+    }
+
+    const prompt = buildGeneratePrompt(roleSetup, messages, diagnosticSummary, companyContext);
 
     const response = await client.messages.create({
       model: "claude-sonnet-4-6",
