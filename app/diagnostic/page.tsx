@@ -61,9 +61,9 @@ function TypingIndicator() {
 }
 
 function renderMarkdown(text: string): React.ReactNode[] {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  const parts = text.split(/(\*\*[\s\S]+?\*\*)/g);
   return parts.map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
+    if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
       return <strong key={i}>{part.slice(2, -2)}</strong>;
     }
     return part;
